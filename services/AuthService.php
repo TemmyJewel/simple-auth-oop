@@ -1,4 +1,7 @@
 <?php
+namespace App\services;
+
+use App\models\User;
 
 class AuthService {
     private $user;

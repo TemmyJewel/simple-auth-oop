@@ -1,4 +1,7 @@
 <?php 
+namespace App\controllers;
+
+use App\services\AuthService;
 
 class AuthController {
     private $authService;

@@ -1,4 +1,8 @@
 <?php
+namespace App\models;
+
+use PDO;
+
 
 class User {
     private $conn;
@@ -52,21 +56,21 @@ class User {
     }
 
     // save token for password reset
-    public function saveToken($token, $email) {
+    function saveToken($token, $email) {
         $expiry = date("Y-m-d H:i:s", time() + 3600); 
         $stmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ?, reset_token_expires_at = ? WHERE email = ?");
         return $stmt->execute([$token, $expiry, $email]);
     } 
 
     // find user by reset token
-    public function findUserByToken($hashed_token) {
+    function findUserByToken($hashed_token) {
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE reset_token_hash = ? ");
         $stmt->execute([$hashed_token]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     // update password
-    public function updatePassword($email,  $hashedPassword) {
+    function updatePassword($email,  $hashedPassword) {
         $stmt = $this->conn->prepare("UPDATE users SET password = ?, reset_token_hash = NULL, reset_token_expires_at = NULL WHERE email = ?");
         return $stmt->execute([$hashedPassword, $email]);
     }

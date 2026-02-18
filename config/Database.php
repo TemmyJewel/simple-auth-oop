@@ -1,9 +1,8 @@
 <?php
+namespace App\config;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+use PDO;
+use PDOException;
 
 class Database {
     private $host;
