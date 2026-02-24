@@ -14,10 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['message'] = "Welcome back, " . $result['username'] . "!";
         header("Location: login.php");
         exit;
-    }
-    else {
+    } else {
         $_SESSION['message'] = is_string($result) ? $result : "Invalid username or password.";
         header("Location: login.php");
         exit;
-    } 
+    }
 }

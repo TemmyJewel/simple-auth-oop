@@ -1,9 +1,11 @@
-<?php 
+<?php
 namespace App\controllers;
 
+use App\dto\AuthDTO;
 use App\services\AuthService;
 
-class AuthController {
+class AuthController
+{
     private $authService;
 
     // Inject AuthService dependency
@@ -13,47 +15,59 @@ class AuthController {
     }
 
     // Handle registration request
-    public function register($data){
+    public function register($data): bool|string
+    {
+        $authDto = new AuthDTO(
+            $data['username'],
+            $data['email'],
+            $data['password']
+        );
+
         // Check if all required fields are present
-        if (empty($data['username']) || empty($data['email']) || empty($data['password'])) {
+        if (empty($authDto->username) || empty($authDto->email) || empty($authDto->password)) {
             return "All fields are required.";
         }
 
         // Sanitize and validate input data
-        $username = htmlspecialchars(trim($data['username']));
-        $email = filter_var(trim($data['email']), FILTER_VALIDATE_EMAIL);
-        $password = trim($data['password']);
+        $authDto->username = htmlspecialchars(trim($authDto->username));
+        $email = filter_var(trim($authDto->email), FILTER_VALIDATE_EMAIL);
 
         if (!$email) {
             return "Invalid email format.";
         }
 
         // Ensure password is at least 8 characters long
-        if (strlen($password) < 8) {
+        if (strlen($authDto->password) < 8) {
             return "Password must be at least 8 characters long.";
         }
 
         // Call the AuthService register method
-        return $this->authService->register($username, $email, $password);
+        return $this->authService->register($authDto);
     }
 
     // Handle login request
-    public function login($data){
+    public function login($data)
+    {
+        $authDto = new AuthDTO(
+            username: $data['username'],
+            password: $data['password']
+        );
+
         // Check if all required fields are present
-        if (empty($data['username']) || empty($data['password'])) {
+        if (empty($authDto->username) || empty($authDto['password'])) {
             return "All fields are required.";
         }
 
         // Sanitize input data
-        $username = htmlspecialchars(trim($data['username']));
-        $password = trim($data['password']);
+        $authDto->username = htmlspecialchars(trim($authDto->username));
 
         // Call the AuthService login method
-        return $this->authService->login($username, $password);
+        return $this->authService->login($authDto);
     }
 
     // Handle password recovery
-    public function recoverPassword($data){
+    public function recoverPassword($data)
+    {
         if (empty($data['email'])) {
             return ['success' => false, 'message' => 'Email is required.'];
         }
@@ -65,7 +79,7 @@ class AuthController {
 
         $token = $this->authService->recoverPassword($email);
 
-        if(!$token) {
+        if (!$token) {
             return ['success' => false, 'message' => 'No user found with that email address.'];
         }
 
@@ -73,14 +87,15 @@ class AuthController {
     }
 
     // Handle password reset
-    public function resetPassword($data, $hashed_token){
+    public function resetPassword($data, $hashed_token)
+    {
         if (empty($data['password']) || empty($data['confirm_password'])) {
             return "All fields are required.";
         }
 
         $password = trim($data['password']);
         $confirmPassword = trim($data['confirm_password']);
-    
+
         if ((strlen($password) < 8) || (strlen($confirmPassword) < 8)) {
             return "Password must be at least 8 characters long.";
         }
