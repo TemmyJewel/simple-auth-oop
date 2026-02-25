@@ -1,10 +1,4 @@
-
-
 <?php
-
-
-
-header("Location: views/login.php");
-exit;
-
+    header("Location: views/login.php");
+    exit;
 ?>

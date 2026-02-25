@@ -32,19 +32,17 @@ class User
     //Check if User Exists
     function findUser($email = null, $username = null)
     {
-        if ($email) {
-            $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = ?");
-            $stmt->execute([$email]);
-        } elseif ($username) {
-            $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
-            $stmt->execute([$username]);
-        } else {
-            return false; // No email or username provided
+        if (!$email && !$username) {
+            return false;
         }
 
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = ? OR username = ? LIMIT 1");
+        $stmt->execute([$email, $username]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ? true : false;
+        
+        return $result ? $result : false;
     }
+
 
     // Login user
     function login($username, $password)

@@ -54,7 +54,7 @@ class AuthController
         );
 
         // Check if all required fields are present
-        if (empty($authDto->username) || empty($authDto['password'])) {
+        if (empty($authDto->username) || empty($authDto->password)) {
             return "All fields are required.";
         }
 
