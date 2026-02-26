@@ -15,6 +15,15 @@ if (!isset($_SESSION['username'])) {
 </head>
 <body>
     <h1>Welcome to your dashboard, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
+
+    <h2>News Categories</h2>
+    <ul>
+        <li><a href="#">Technology</a></li>
+        <li><a href="#">Sports</a></li>
+        <li><a href="#">Business</a></li>
+        <li><a href="#">Entertainment</a></li>
+        <li><a href="#">Health</a></li>
+    </ul>
     
     <form action="logout-handler.php" method="POST" style="display:inline;">
         <button type="submit" class="btn-logout">Logout</button>

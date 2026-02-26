@@ -5,6 +5,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ );
 $dotenv->load();
 
+use GuzzleHttp\Client;
 use App\Config\Database;
 use App\Models\User;
 use App\Services\AuthService;
@@ -14,3 +15,13 @@ $db = (new Database());
 $user = new User($db);
 $authService = new AuthService($user);
 $authController = new AuthController($authService);
+
+$client = new Client([
+        'base_uri' => 'https://real-time-news-data.p.rapidapi.com/',
+        'timeout'  => 10.0,
+        'headers' => [
+            'x-rapidapi-host' => 'real-time-news-data.p.rapidapi.com',
+            'x-rapidapi-key' => $_ENV['RAPID_API_KEY'],
+            'Accept' => 'application/json'
+	    ]
+    ]);
