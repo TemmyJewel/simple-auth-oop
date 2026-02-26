@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_id'] = $result['id'];
         $_SESSION['username'] = $result['username'];
         $_SESSION['message'] = "Welcome back, " . $result['username'] . "!";
-        header("Location: login.php");
+        header("Location: dashboard.php");
         exit;
     } else {
         $_SESSION['message'] = is_string($result) ? $result : "Invalid username or password.";

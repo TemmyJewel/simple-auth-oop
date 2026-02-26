@@ -10,7 +10,7 @@ use App\Models\User;
 use App\Services\AuthService;
 use App\Controllers\AuthController;
 
-$db = (new Database())->connect();
+$db = (new Database());
 $user = new User($db);
 $authService = new AuthService($user);
 $authController = new AuthController($authService);

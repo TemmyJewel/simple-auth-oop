@@ -36,7 +36,7 @@ class AuthService
 
     // Password recovery method
     public function recoverPassword($email)
-    {
+    {;
         $user = $this->user->findUser($email, null);
 
         if ($user) {

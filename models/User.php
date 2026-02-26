@@ -3,26 +3,30 @@
 namespace App\models;
 
 use PDO;
+use App\config\Database;
 
 class User
 {
-    private $conn;
+    private $db;
 
     // Constructor to inject database connection
-    public function __construct(PDO $conn)
+    public function __construct(Database $db)
     {
-        $this->conn = $conn;
+        $this->db = $db;
     }
 
     // Register a new user
     function register($username, $email, $password)
     {
-        $stmt = $this->conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+        $data = [
+            'username' => $username,
+            'email' => $email,
+            'password' => $password
+        ];
 
-        $result = $stmt->execute([$username, $email, $password]);
+        $result = $this->db->insert('users', $data);
 
         if (!$result) {
-            error_log("User registration failed: " . implode(", ", $stmt->errorInfo()));
             return "Registration failed. Please try again.";
         }
 
@@ -36,9 +40,13 @@ class User
             return false;
         }
 
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = ? OR username = ? LIMIT 1");
-        $stmt->execute([$email, $username]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        // filter out null values
+        $data = array_filter([
+            'email' => $email,
+            'username' => $username
+        ]);
+
+        $result = $this->db->selectOne('users', $data);
         
         return $result ? $result : false;
     }
@@ -47,9 +55,10 @@ class User
     // Login user
     function login($username, $password)
     {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
-        $stmt->execute([$username]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $this->findUser(null, $username);
+        if (!$user) {
+            return false;
+        }
 
         if ($user && password_verify($password, $user['password'])) {
             return $user;
@@ -62,22 +71,37 @@ class User
     function saveToken($token, $email)
     {
         $expiry = date("Y-m-d H:i:s", time() + 3600);
-        $stmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ?, reset_token_expires_at = ? WHERE email = ?");
-        return $stmt->execute([$token, $expiry, $email]);
+
+        $data = [
+            'reset_token_hash' => $token,
+            'reset_token_expires_at' => $expiry
+        ];
+
+        $result = $this->db->update('users', $data, ['email' => $email]);
+        return $result;
     }
 
     // find user by reset token
     function findUserByToken($hashed_token)
     {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE reset_token_hash = ? ");
-        $stmt->execute([$hashed_token]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $data = [
+            'reset_token_hash' => $hashed_token
+        ];
+
+        $result = $this->db->selectOne('users', $data);
+        return $result ? $result : false;
     }
 
     // update password
     function updatePassword($email, $hashedPassword)
     {
-        $stmt = $this->conn->prepare("UPDATE users SET password = ?, reset_token_hash = NULL, reset_token_expires_at = NULL WHERE email = ?");
-        return $stmt->execute([$hashedPassword, $email]);
+        $data = [
+            'password' => $hashedPassword,
+            'reset_token_hash' => null,
+            'reset_token_expires_at' => null
+        ];
+
+        $result = $this->db->update('users', $data, ['email' => $email]);
+        return $result;
     }
 }
