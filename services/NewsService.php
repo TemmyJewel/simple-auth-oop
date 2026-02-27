@@ -10,15 +10,20 @@ class NewsService{
     }
 
     // Fetch news 
-    public function getNews($query){
-        $news_data = $this->newsApi->fetchNews($query);
+    public function getNews($category){
+        $news_data = $this->newsApi->fetchNews($category);
 
-        if (!$news_data) {
-            return "Failed to fetch news data.";
+        if (!is_array($news_data)) {
+            return $news_data;
         }
 
+        $news_data = $this->formatNewsData($news_data);
+        return $news_data;
+    }
 
-        $news_data = array_map(function($news_item){
+    // Filter and format news data
+    private function formatNewsData($news_data){
+        return array_map(function($news_item){
             return [
                 'title' => $news_item['title'],
                 'link' => $news_item['link'],
@@ -26,8 +31,5 @@ class NewsService{
                 'authors' => $news_item['authors'] ?? []
             ];
         }, $news_data);
-
-
-        return $news_data;
     }
 }

@@ -14,11 +14,13 @@ class NewsController{
         $this->newsService = $newsService;
     }
 
+    // Fetch news based on category
     public function index(){
         $selectedCategory = $_GET['cat'] ?? 'General';
         $category = NewsCategory::tryFrom($selectedCategory) ?? NewsCategory::General;
 
-        $newsData = $this->getNews($category);
+        $newsData = $this->newsService->getNews($category);
+        
 
         return [
             'newsData' => $newsData,
@@ -27,8 +29,4 @@ class NewsController{
 
     }
 
-    public function getNews($query){
-        return $this->newsService->getNews($query);
-
-    }
 }

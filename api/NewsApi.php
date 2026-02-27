@@ -20,11 +20,12 @@ class NewsApi {
         $this->client = $client;
     }
 
-    public function fetchNews(NewsCategory $query){
+    // Fetch News data based on query
+    public function fetchNews(NewsCategory $category){
         try {
             $response = $this->client->get('search', [
                 'query' => [
-                    'query' => $query->value,
+                    'query' => $category->value,
                     'limit' => 20,
                     'time_published' => 'anytime',
                     'country' => 'NG',
@@ -33,23 +34,24 @@ class NewsApi {
             ]);
 
             $data = json_decode($response->getBody()->getContents(), true);
-            return $data['data'];
+
+            return $data['data'] ?? [];
 
         } catch (RequestException $e) {
-            return null;
             error_log("Request failed: " . $e->getMessage());
+            return 'Failed to fetch news data.';
         } catch (ConnectException $e) {
-            return null;
             error_log("Connection failed: " . $e->getMessage());
+            return 'Connection error occurred while fetching news data.';
         } catch (ClientException $e) {
-            return null;
             error_log("Client error: " . $e->getMessage());
+            return 'Client error occurred while fetching news data.';
         } catch (ServerException $e) {
-            return null;
             error_log("Server error: " . $e->getMessage());
+            return 'Server error occurred while fetching news data.';
         } catch (\Exception $e) {
-            return null;
             error_log("Connection failed: " . $e->getMessage());
+            return 'An unexpected error occurred while fetching news data.';
         }
     }
 

@@ -3,6 +3,11 @@ namespace App\views;
 
 class NewsHelper {
     public function newsCard($newsData) {
+        if (is_string($newsData)) {
+            echo '<p>' . htmlspecialchars($newsData) . '</p>';
+            return;
+        }
+
         if (isset($newsData) && is_array($newsData)) {  
             foreach ($newsData as $news_item) {
                 echo '<div>';
