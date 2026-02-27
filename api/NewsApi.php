@@ -1,6 +1,8 @@
 <?php
 namespace App\api;
 
+require_once __DIR__ . '/../bootstrap.php';
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ConnectException;
@@ -9,7 +11,6 @@ use GuzzleHttp\Exception\ServerException;
 
 use App\enums\NewsCategory;
 
-require_once __DIR__ . '/../bootstrap.php';
 
 class NewsApi {
     private $client;

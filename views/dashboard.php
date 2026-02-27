@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../bootstrap.php';
 
+
 session_start();
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
@@ -39,19 +40,7 @@ if (!isset($_SESSION['username'])) {
 
     <h2><?php echo htmlspecialchars($category->value); ?> News</h2>
     <div>
-        <?php if (isset($newsData) && is_array($newsData)) : ?>
-            <?php foreach ($newsData as $news_item) : ?>
-                <div>
-                    <h3><?php echo htmlspecialchars($news_item['title']); ?></h3>
-                    <p><?php echo htmlspecialchars($news_item['snippet']); ?></p>
-                    <a href="<?php echo htmlspecialchars($news_item['link']); ?>" target="_blank">Read more</a>
-                        <p>Authors: <?php echo !empty($news_item['authors']) ? implode(', ', $news_item['authors']) : 'Unknown'; ?></p>
-                        <hr>
-                    </div>
-            <?php endforeach; ?>
-        <?php else : ?>
-            <p>No news data available.</p>
-        <?php endif; ?>
+            <?php $newsHelper->newsCard($newsData); ?>
     </div>
     
     

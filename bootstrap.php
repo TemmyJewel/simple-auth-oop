@@ -11,15 +11,16 @@ use App\Models\User;
 use App\Services\AuthService;
 use App\Controllers\AuthController;
 
-use App\enums\NewsCategory;
 use App\api\NewsApi;
 use App\controllers\NewsController;
 use App\Services\NewsService;
+use App\views\NewsHelper;
 
 $db = (new Database());
 $user = new User($db);
 $authService = new AuthService($user);
 $authController = new AuthController($authService);
+$newsHelper = new NewsHelper();
 
 $client = new Client([
         'base_uri' => 'https://real-time-news-data.p.rapidapi.com/',
