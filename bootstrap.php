@@ -11,6 +11,11 @@ use App\Models\User;
 use App\Services\AuthService;
 use App\Controllers\AuthController;
 
+use App\enums\NewsCategory;
+use App\api\NewsApi;
+use App\controllers\NewsController;
+use App\Services\NewsService;
+
 $db = (new Database());
 $user = new User($db);
 $authService = new AuthService($user);
@@ -25,3 +30,8 @@ $client = new Client([
             'Accept' => 'application/json'
 	    ]
     ]);
+
+$newsApi = new NewsApi($client);
+$newsService = new NewsService($newsApi);
+$newsController = new NewsController($newsService);
+
