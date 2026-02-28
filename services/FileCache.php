@@ -5,7 +5,7 @@ class FileCache {
     private $cacheDir;
     private $ttl;
 
-    public function __construct($cacheDir = __DIR__ . '/../cache', $ttl = 60)
+    public function __construct($cacheDir = __DIR__ . '/../cache', $ttl = 3600)
     {
         $this->cacheDir = $cacheDir;
         $this->ttl = $ttl;
