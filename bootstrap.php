@@ -15,12 +15,15 @@ use App\api\NewsApi;
 use App\controllers\NewsController;
 use App\Services\NewsService;
 use App\views\NewsHelper;
+use App\services\FileCache;
+
 
 $db = (new Database());
 $user = new User($db);
 $authService = new AuthService($user);
 $authController = new AuthController($authService);
 $newsHelper = new NewsHelper();
+
 
 $client = new Client([
         'base_uri' => 'https://real-time-news-data.p.rapidapi.com/',
@@ -32,7 +35,8 @@ $client = new Client([
 	    ]
     ]);
 
+$fileCache = new FileCache();
 $newsApi = new NewsApi($client);
-$newsService = new NewsService($newsApi);
+$newsService = new NewsService($newsApi, $fileCache);
 $newsController = new NewsController($newsService);
 
