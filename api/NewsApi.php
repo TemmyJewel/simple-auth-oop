@@ -4,13 +4,10 @@ namespace App\api;
 require_once __DIR__ . '/../bootstrap.php';
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Exception\GuzzleException;
 
 use App\enums\NewsCategory;
-
+use App\exception\ApiException;
 
 class NewsApi {
     private $client;
@@ -37,22 +34,9 @@ class NewsApi {
 
             return $data['data'] ?? [];
 
-        } catch (RequestException $e) {
-            error_log("Request failed: " . $e->getMessage());
-            return 'Failed to fetch news data.';
-        } catch (ConnectException $e) {
-            error_log("Connection failed: " . $e->getMessage());
-            return 'Connection error occurred while fetching news data.';
-        } catch (ClientException $e) {
-            error_log("Client error: " . $e->getMessage());
-            return 'Client error occurred while fetching news data.';
-        } catch (ServerException $e) {
-            error_log("Server error: " . $e->getMessage());
-            return 'Server error occurred while fetching news data.';
-        } catch (\Exception $e) {
-            error_log("Connection failed: " . $e->getMessage());
-            return 'An unexpected error occurred while fetching news data.';
-        }
+        } catch (GuzzleException $e) {
+            throw new ApiException('News Api Failed', 0, $e);
+        } 
     }
 
     
