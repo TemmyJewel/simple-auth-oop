@@ -6,14 +6,14 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ );
 $dotenv->load();
 
 use GuzzleHttp\Client;
-use App\Config\Database;
-use App\Models\User;
-use App\Services\AuthService;
+use App\config\Database;
+use App\models\User;
+use App\services\AuthService;
 use App\Controllers\AuthController;
 
 use App\api\NewsApi;
 use App\controllers\NewsController;
-use App\Services\NewsService;
+use App\services\NewsService;
 use App\views\NewsHelper;
 use App\services\FileCache;
 

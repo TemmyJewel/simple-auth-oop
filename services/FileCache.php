@@ -39,6 +39,11 @@ class FileCache {
         // Check if file exists
         if(file_exists($cacheFile)){
             $content = unserialize(file_get_contents($cacheFile));
+
+            if($content === false || !is_array($content)){
+                return null;
+            }
+            
             return [
                 'data' => $content['data'],
                 'is_expired' => $content['timestamp'] < time()

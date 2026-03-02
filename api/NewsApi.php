@@ -1,8 +1,6 @@
 <?php
 namespace App\api;
 
-require_once __DIR__ . '/../bootstrap.php';
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
