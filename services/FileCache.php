@@ -39,20 +39,12 @@ class FileCache {
         // Check if file exists
         if(file_exists($cacheFile)){
             $content = unserialize(file_get_contents($cacheFile));
-            $isExpired = $this->isExpired($content, $cacheFile);
-            
-            return $isExpired ? null : $content['data'];
+            return [
+                'data' => $content['data'],
+                'is_expired' => $content['timestamp'] < time()
+            ];
         }
 
-        return null;
-    }
-
-    // Check if cache file is expired
-    private function isExpired($content, $cacheFile){
-        if($content['timestamp'] < time()){
-            unlink($cacheFile);
-            return true;
-        }
-        return false;
+        return null; 
     }
 }

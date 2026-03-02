@@ -4,6 +4,7 @@ namespace App\services;
 require_once __DIR__ . '/../bootstrap.php';
 
 use App\api\NewsApi;
+use App\exception\ApiException;
 use App\services\FileCache;
 
 
@@ -19,20 +20,29 @@ class NewsService{
 
     // Fetch news 
     public function getNews($category){
-        $news_data = $this->fileCache->getKey($category);
+        $cache = $this->fileCache->getKey($category);
 
-        if($news_data === null){
-            $news_data = $this->newsApi->fetchNews($category);
-
-            if(!is_array($news_data)){
-                return $news_data;
-            }
-
-            $news_data = $this->formatNewsData($news_data);
-            $this->fileCache->saveKey($category, $news_data);
+        if($cache !== null && !$cache['is_expired']){
+            return $cache['data'];
         }
 
-        return $news_data;
+        // If cache is expired
+        try{
+                $api_data = $this->newsApi->fetchNews($category);
+                $news_data = $this->formatNewsData($api_data);
+
+                $this->fileCache->saveKey($category, $news_data);
+                return $news_data;
+
+            }catch(ApiException $e){
+                error_log("Api Failed ". $e->getMessage());
+                
+                if($cache !== null){
+                    return $cache['data'];
+                }
+
+                return [];
+            }
     }
 
     // Filter and format news data

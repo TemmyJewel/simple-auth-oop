@@ -3,8 +3,8 @@ namespace App\views;
 
 class NewsHelper {
     public function newsCard($newsData) {
-        if (is_string($newsData)) {
-            echo '<p>' . htmlspecialchars($newsData) . '</p>';
+        if (empty($newsData)) {
+            echo '<p>No news available at the moment </p>';
             return;
         }
 
